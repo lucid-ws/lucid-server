@@ -1,0 +1,29 @@
+{
+  "name": "lucid-server",
+  "version": "1.0.0",
+  "description": "Lightweight and simple wrapper around WebSockets to simplify connections and communication",
+  "main": "src/lucid-server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucid-ws/lucid-server.git"
+  },
+  "keywords": [
+    "lucid",
+    "server",
+    "websockets",
+    "websocket",
+    "wrapper"
+  ],
+  "author": "Amish Shah <amishshah.2k@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/lucid-ws/lucid-server/issues"
+  },
+  "homepage": "https://github.com/lucid-ws/lucid-server#readme",
+  "dependencies": {
+    "ws": "^1.0.1"
+  }
+}
