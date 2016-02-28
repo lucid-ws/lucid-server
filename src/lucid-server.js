@@ -5,7 +5,6 @@ exports.protocol_v = "alpha2";
 var WebSocketServer = require("ws").Server;
 var MergeOptions = require("./util/options-default").merge;
 var EventEmitter = require("events").EventEmitter;
-var PacketUtil = require("lucid-packet");
 
 var LucidClient = require("./structures/LucidClient");
 var LucidMessagingService = require("./server-internal/lucid-messaging");
