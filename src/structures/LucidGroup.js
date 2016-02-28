@@ -41,10 +41,8 @@ class LucidGroup{
 		return this.send(packet);
 	}
 	
-	send(packet){
-		packet.d = packet.d || {};
-		packet.d.group = true;
-		this.members.map(client => this.server.messaging.sendTo(client.ws, packet));
+	send(type, data){
+		this.members.map(client => client.send(type, data));
 	}
 	
 	sendRaw(data){

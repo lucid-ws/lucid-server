@@ -54,7 +54,14 @@ class LucidServer extends EventEmitter{
 		this.groups.push(group);
 		return group;
 	}
-
+	
+	broadcast(type, data){
+		this.wss.connections.map(client => client.send(type, data));
+	}
+	
+	broadcastRaw(data){
+		this.wss.connections.map(connection => this.messaging.sendToRaw(connection.ws, data));
+	}
 }
 
 module.exports = LucidServer;
