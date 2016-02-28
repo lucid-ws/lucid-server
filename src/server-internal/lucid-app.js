@@ -10,7 +10,7 @@ class LucidApp{
 		this.wrapper = wrapper;
 		
 		var app = this.app = express();
-		var customRouter = this.custom_router = express.Router();
+		var customRouter = this.customAPIRouter = express.Router();
 		var internalAPIRouter = this.internalAPIRouter = express.Router();
 		
 		internalAPIRouter.get("/meta", (req, res) => {

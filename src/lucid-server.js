@@ -41,7 +41,7 @@ class LucidServer extends EventEmitter{
 	}
 	
 	get api(){
-		return this._app.internalAPIRouter;
+		return this._app.customAPIRouter;
 	}
 	
 	get connections(){
