@@ -4,7 +4,7 @@
   "description": "Lightweight and simple wrapper around WebSockets to simplify connections and communication",
   "main": "src/lucid-server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test/test"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/lucid-ws/lucid-server#readme",
   "dependencies": {
+    "lucid-packet": "github:lucid-ws/lucid-packet",
+    "md5-hex": "^1.2.1",
     "ws": "^1.0.1"
   }
 }
