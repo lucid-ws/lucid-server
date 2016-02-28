@@ -22,10 +22,12 @@ class LucidGroup{
 	}
 	
 	removeMembers(connections){
+		connections = connections || [];
 		return connections.map(client => this.removeMember(client));
 	}
 	
 	addMembers(connections){
+		connections = connections || [];
 		return connections.map(client => this.addMember(client));
 	}
 	
