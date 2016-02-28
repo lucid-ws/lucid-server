@@ -42,6 +42,7 @@ class LucidGroup{
 	
 	addMember(client){
 		if(!client.in(this.members)){
+			this.members.push(client);
 			return true;
 		}else{
 			return false;
