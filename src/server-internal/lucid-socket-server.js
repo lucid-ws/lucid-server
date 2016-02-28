@@ -109,7 +109,19 @@ class LucidWebSocketServer extends WebSocketServer{
 						return;
 					}
 					
-					client.uuid = client.token = md5Hex(`${Date.now()}-${Math.random() * 1000000}-${this.connections.indexOf(client)}`);
+					var token;
+					
+					while(true){
+						token = md5Hex(`${Date.now()}-${Math.random() * 1000000}-${this.connections.indexOf(client)}`);
+						for(var client of this.connections){
+							if(client.token === token){
+								continue;
+							}
+						}
+						break;
+					}
+					
+					client.uuid = client.token = token;
 					client.authenticated = true;
 					
 					client._send({

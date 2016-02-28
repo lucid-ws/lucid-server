@@ -7,7 +7,16 @@ class LucidGroup{
 	constructor(server, options){
 		this.server = server;
 		this.members = [];
-		this.uuid = md5Hex(`${Date.now()}-${Math.random() * 1000000}`);
+		
+		while(true){
+			this.uuid = md5Hex(`${Date.now()}-${Math.random() * 1000000}`);
+			for(var group of server.groups){
+				if(group.uuid === this.uuid){
+					continue;
+				}
+			}
+			break;
+		}
 		
 		this.options = options;
 	}
