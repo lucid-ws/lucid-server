@@ -2,6 +2,7 @@
 
 const WebSocket = require("ws");
 const EventEmitter = require("events").EventEmitter;
+const express = require("express");
 
 class LucidClient extends EventEmitter{
 	constructor(ws, interfaceServer){

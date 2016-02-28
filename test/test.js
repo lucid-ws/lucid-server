@@ -3,7 +3,7 @@ var WebSocket = require("ws");
 
 var server = new LucidServer();
 
-var ws = new WebSocket("ws://127.0.0.1:25543");
+var ws = new WebSocket("ws://127.0.0.1:25544");
 
 var token;
 

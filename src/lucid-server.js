@@ -10,10 +10,12 @@ var PacketUtil = require("lucid-packet");
 var LucidClient = require("./structures/LucidClient");
 var LucidMessagingService = require("./server-internal/lucid-messaging");
 var LucidWebSocketServer = require("./server-internal/lucid-socket-server");
+var LucidApp = require("./server-internal/lucid-app");
 var LucidGroup = require("./structures/LucidGroup");
 
 var defaultOptions = {
-	port: 25543,
+	api_port: 25543,
+	wss_port: 25544,
 	max_connections: 10,
     response_max_wait_time : 5000,
     lenient : false,
@@ -32,8 +34,15 @@ class LucidServer extends EventEmitter{
 		this.groups = [];
 		
 		this.messaging = new LucidMessagingService(this);
+		options.port = options.wss_port;
 		this.wss = new LucidWebSocketServer(options, this);
 		
+		this._app = new LucidApp(this);
+		
+	}
+	
+	get api(){
+		return this._app.internalAPIRouter;
 	}
 	
 	get connections(){
