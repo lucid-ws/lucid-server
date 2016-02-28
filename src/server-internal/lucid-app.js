@@ -1,6 +1,7 @@
 "use strict";
 
 const express = require("express");
+const bodyParser = require("body-parser");
 const protocol_v = require("../lucid-server").protocol_v;
 
 class LucidApp{
@@ -20,7 +21,10 @@ class LucidApp{
 				max_connections : this.wrapper.options.max_connections
 			});
 		});
+		
 		customRouter.use((req, res, next) => this.verifyIfUser(req, res, next));
+		customRouter.use(bodyParser.urlencoded({ extended: false }));
+		customRouter.use(bodyParser.json());
 		
 		app.use("/custom_api", customRouter);
 		app.use("/api", internalAPIRouter);
