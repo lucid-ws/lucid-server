@@ -49,16 +49,16 @@ class LucidGroup{
 		}
 	}
 	
-	broadcast(packet){
-		return this.send(packet);
+	broadcast(type, data){
+		return this.send(type, data);
 	}
 	
 	send(type, data){
-		this.members.map(client => client.send(type, data));
+		return this.members.map(client => client.send(type, data));
 	}
 	
 	sendRaw(data){
-		this.members.map(client => this.server.messaging.sendToRaw(client.ws, data));
+		return this.members.map(client => this.server.messaging.sendToRaw(client.ws, data));
 	}
 	
 }
