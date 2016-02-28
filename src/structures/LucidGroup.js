@@ -21,12 +21,12 @@ class LucidGroup{
 		}
 	}
 	
-	removeMembers(clients){
-		return clients.map(client => this.removeMember(client));
+	removeMembers(connections){
+		return connections.map(client => this.removeMember(client));
 	}
 	
-	addMembers(clients){
-		return clients.map(client => this.addMember(client));
+	addMembers(connections){
+		return connections.map(client => this.addMember(client));
 	}
 	
 	addMember(client){

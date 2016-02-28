@@ -13,6 +13,8 @@ server.on("clientClose", (client, reason)=>{
 
 server.on("clientConnected", client => {
 	
+	console.log("length", server.clients.length);
+	
 	client.on("message", (type, data) => {
 		console.log(type, data);
 	});

@@ -17,8 +17,8 @@ class LucidApp{
 			res.json({
 				wss_port : this.wrapper.options.port,
 				protocol_v,
-				clients : this.wrapper.wss.clients.length,
-				max_clients : this.wrapper.options.max_clients
+				connections : this.wrapper.wss.connections.length,
+				max_connections : this.wrapper.options.max_connections
 			});
 		});
 		
@@ -34,9 +34,9 @@ class LucidApp{
 	
 	verifyIfUser(req, res, next){
 		if(req.headers["token"]){
-			var clients = this.wrapper.wss.clients.filter(conn => conn.uuid === req.headers["token"]);
-			if(clients.length === 1){
-				var client = clients[0];
+			var connections = this.wrapper.wss.connections.filter(conn => conn.uuid === req.headers["token"]);
+			if(connections.length === 1){
+				var client = connections[0];
 				req.client = client;
 				next();
 				return;

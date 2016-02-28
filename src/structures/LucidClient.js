@@ -23,7 +23,6 @@ class LucidClient extends EventEmitter{
 		ws.on("error", err => this.server.wss.eventClientError(this, err));
 		ws.on("close", (code, message) => this.server.wss.eventClientClose(this, code, message));
 		ws.on("message", (data, flags) => this.server.wss.eventClientMessage(this, data, flags));
-
 	}
 	
 	in(array){

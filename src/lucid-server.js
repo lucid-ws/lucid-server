@@ -15,7 +15,7 @@ var LucidGroup = require("./structures/LucidGroup");
 var defaultOptions = {
 	api_port: 25543,
 	wss_port: 25544,
-	max_clients: 10,
+	max_connections: 10,
     response_max_wait_time : 5000,
     lenient : false,
 	heartbeat_interval : 30000
@@ -35,13 +35,16 @@ class LucidServer extends EventEmitter{
 		this.messaging = new LucidMessagingService(this);
 		options.port = options.wss_port;
 		this.wss = new LucidWebSocketServer(options, this);
-		
 		this._app = new LucidApp(this);
 		
 	}
 	
 	get api(){
 		return this._app.customAPIRouter;
+	}
+	
+	get connections(){
+		return this.wss.connections;
 	}
 	
 	get clients(){
@@ -56,11 +59,11 @@ class LucidServer extends EventEmitter{
 	}
 	
 	broadcast(type, data){
-		this.wss.clients.map(client => client.send(type, data));
+		this.wss.connections.map(client => client.send(type, data));
 	}
 	
 	broadcastRaw(data){
-		this.wss.clients.map(connection => this.messaging.sendToRaw(connection.ws, data));
+		this.wss.connections.map(connection => this.messaging.sendToRaw(connection.ws, data));
 	}
 }
 
