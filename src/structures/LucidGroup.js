@@ -12,6 +12,23 @@ class LucidGroup{
 		this.options = options;
 	}
 	
+	removeMember(client){
+		var index = this.members.indexOf(client)
+		if(index > -1){
+			this.members.splice(index, 1);
+		}else{
+			return false;
+		}
+	}
+	
+	removeMembers(clients){
+		return clients.map(client => this.removeMember(client));
+	}
+	
+	addMembers(clients){
+		return clients.map(client => this.addMember(client));
+	}
+	
 	addMember(client){
 		if(!client.in(this.members)){
 			return true;

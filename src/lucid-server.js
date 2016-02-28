@@ -10,6 +10,7 @@ var PacketUtil = require("lucid-packet");
 var LucidClient = require("./structures/LucidClient");
 var LucidMessagingService = require("./server-internal/lucid-messaging");
 var LucidWebSocketServer = require("./server-internal/lucid-socket-server");
+var LucidGroup = require("./structures/LucidGroup");
 
 var defaultOptions = {
 	port: 25543,
@@ -28,6 +29,8 @@ class LucidServer extends EventEmitter{
 		this.options = options = MergeOptions(options, defaultOptions);
 		this.timeouts = [];
 		
+		this.groups = [];
+		
 		this.messaging = new LucidMessagingService(this);
 		this.wss = new LucidWebSocketServer(options, this);
 		
@@ -35,6 +38,13 @@ class LucidServer extends EventEmitter{
 	
 	get connections(){
 		return this.wss.connections;
+	}
+	
+	createGroup(options, members){
+		var group = new LucidGroup(this, options);
+		group.addMembers(members);
+		this.groups.push(group);
+		return group;
 	}
 
 }
