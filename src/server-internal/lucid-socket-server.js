@@ -22,7 +22,7 @@ class LucidWebSocketServer extends WebSocketServer{
 		
 		this.wrapper = interfaceServer;
 		
-		this.connections = [];
+		this.clients = [];
 		
 		this.on("error", error => this.eventError(error));
 		this.on("connection", connection => this.eventConnection(connection));
@@ -34,14 +34,14 @@ class LucidWebSocketServer extends WebSocketServer{
 	}
 	
 	eventConnection(connection){
-		if(this.connections.length >= this.wrapper.options.max_connections){
+		if(this.clients.length >= this.wrapper.options.max_clients){
 			// send to raw for better performance when the server is under stress
 			this.wrapper.messaging.sendToRaw(connection, RawPackets.MAX_CONNS);
 			return;
 		}
 		
 		var client = new Client(connection, this.wrapper);
-		this.connections.push(client);
+		this.clients.push(client);
 		
 		setTimeout(() => this.checkAuth(client), this.wrapper.options.response_max_wait_time);
 	}
@@ -109,7 +109,7 @@ class LucidWebSocketServer extends WebSocketServer{
 						return;
 					}
 					
-					client.uuid = client.token = md5Hex(`${Date.now()}-${Math.random() * 1000000}-${this.connections.indexOf(client)}`);
+					client.uuid = client.token = md5Hex(`${Date.now()}-${Math.random() * 1000000}-${this.clients.indexOf(client)}`);
 					client.authenticated = true;
 					
 					client._send({
@@ -141,9 +141,9 @@ class LucidWebSocketServer extends WebSocketServer{
 	}
 	
 	removeClient(client){
-		var index = this.connections.indexOf(client);
+		var index = this.clients.indexOf(client);
 		if(index > -1){
-			this.connections.splice(index, 1);
+			this.clients.splice(index, 1);
 			return true;
 		}
 		return false;

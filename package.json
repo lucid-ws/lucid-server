@@ -1,7 +1,7 @@
 {
   "name": "lucid-server",
   "version": "1.0.0",
-  "description": "Lightweight and simple wrapper around WebSockets to simplify connections and communication",
+  "description": "Lightweight framework for building real-time games and applications using WebSockets",
   "main": "src/lucid-server.js",
   "scripts": {
     "test": "node test/test"
