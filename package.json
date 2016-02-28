@@ -24,7 +24,6 @@
   },
   "homepage": "https://github.com/lucid-ws/lucid-server#readme",
   "dependencies": {
-    "lucid-packet": "github:lucid-ws/lucid-packet",
     "md5-hex": "^1.2.1",
     "ws": "^1.0.1"
   }
