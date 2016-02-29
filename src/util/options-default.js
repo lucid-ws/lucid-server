@@ -7,4 +7,4 @@ exports.merge = function(obj, defaults){
 	}
 
 	return obj;
-}
+};
