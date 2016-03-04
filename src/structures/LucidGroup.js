@@ -53,6 +53,19 @@ class LucidGroup{
 		return this.send(type, data);
 	}
 
+	broadcastExcept(type, data, exceptions){
+		return this.sendExcept(type, data, exceptions);
+	}
+
+	sendExcept(type, data, exceptions){
+		return this.members.map(client => {
+			if(!client.in(exceptions)){
+				return client.send(type, data);
+			}
+			return false;
+		});
+	}
+
 	send(type, data){
 		return this.members.map(client => client.send(type, data));
 	}
