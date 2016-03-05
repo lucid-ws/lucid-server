@@ -3,7 +3,8 @@
 ## Class: LucidServer
 
 ```js
-const LucidServer = require("lucid-server")```
+const LucidServer = require("lucid-server")
+```
 
 This class is a LucidServer. It is an `EventEmitter`.
 
