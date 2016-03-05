@@ -9,7 +9,6 @@ class LucidClient extends EventEmitter{
 
 		this.server = interfaceServer;
 		this.ws = ws;
-		this.connMeta = ws._socket.address(); //{ address: '127.0.0.1', family: 'IPv4', port: 25543 }
 		this.authenticated = false;
 		this.token = null;
 
@@ -31,6 +30,15 @@ class LucidClient extends EventEmitter{
 	_send(packet){
 		if(this.ws.readyState === WebSocket.OPEN){
 			this.server.messaging.sendTo(this.ws, packet);
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	sendRaw(data){
+		if(this.ws.readyState === WebSocket.OPEN){
+			this.server.messaging.sendToRaw(this.ws, data);
 			return true;
 		}else{
 			return false;

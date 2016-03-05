@@ -46,7 +46,7 @@ class LucidServer extends EventEmitter{
 	}
 
 	get clients(){
-		return this.wss.clients;
+		return this.wss.connections;
 	}
 
 	createGroup(options, members){
@@ -56,18 +56,35 @@ class LucidServer extends EventEmitter{
 		return group;
 	}
 
+	deleteGroup(group){
+		var index = this.groups.indexOf(group);
+		if(index > -1){
+			this.groups.splice(index, 1);
+		}
+		return false;
+	}
+
 	broadcast(type, data){
-		this.wss.connections.map(client => client.send(type, data));
+		return this.wss.connections.map(client => client.send(type, data));
 	}
 
 	broadcastRaw(data){
-		this.wss.connections.map(connection => this.messaging.sendToRaw(connection.ws, data));
+		return this.wss.connections.map(connection => this.messaging.sendToRaw(connection.ws, data));
 	}
 
 	broadcastExcept(type, data, exceptions){
 		return this.wss.connections.map(client => {
 			if(!client.in(exceptions)){
 				return client.send(type, data);
+			}
+			return false;
+		});
+	}
+
+	broadcastRawExcept(data, exceptions){
+		return this.wss.connections.map(client => {
+			if(!client.in(exceptions)){
+				return this.messaging.sendToRaw(client.ws, data);
 			}
 			return false;
 		});
