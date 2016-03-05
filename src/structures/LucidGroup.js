@@ -2,16 +2,16 @@
 
 var md5Hex = require("md5-hex");
 
-class LucidGroup{
+class LucidGroup {
 
-	constructor(server, options){
+	constructor(server, options) {
 		this.server = server;
-		this.members = [];
+		this.clients = [];
 
-		while(true){
-			this.uuid = md5Hex(`${Date.now()}-${Math.random() * 1000000}`);
-			for(var group of server.groups){
-				if(group.uuid === this.uuid){
+		while (true) {
+			this.uuid = md5Hex(`${Date.now() }-${Math.random() * 1000000}`);
+			for (var group of server.groups) {
+				if (group.uuid === this.uuid) {
 					continue;
 				}
 			}
@@ -21,57 +21,58 @@ class LucidGroup{
 		this.options = options;
 	}
 
-	removeMember(client){
-		var index = this.members.indexOf(client);
-		if(index > -1){
-			this.members.splice(index, 1);
-		}else{
+	removeClient(client) {
+		var index = this.clients.indexOf(client);
+		if (index > -1) {
+			this.clients.splice(index, 1);
+		} else {
 			return false;
 		}
 	}
 
-	removeMembers(connections){
+	removeClients(connections) {
 		connections = connections || [];
-		return connections.map(client => this.removeMember(client));
+		return connections.map(client => this.removeClient(client));
 	}
 
-	addMembers(connections){
+	addClients(connections) {
 		connections = connections || [];
-		return connections.map(client => this.addMember(client));
+		return connections.map(client => this.addClient(client));
 	}
 
-	addMember(client){
-		if(!client.in(this.members)){
-			this.members.push(client);
+	addClient(client) {
+		if (!client.in(this.clients)) {
+			this.clients.push(client);
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
 
-	broadcast(type, data){
-		return this.send(type, data);
+	broadcast(type, data) {
+		return this.clients.map(client => client.send(type, data));
 	}
 
-	broadcastExcept(type, data, exceptions){
-		return this.sendExcept(type, data, exceptions);
-	}
-
-	sendExcept(type, data, exceptions){
-		return this.members.map(client => {
-			if(!client.in(exceptions)){
+	broadcastExcept(type, data, exceptions) {
+		return this.clients.map(client => {
+			if (!client.in(exceptions)) {
 				return client.send(type, data);
 			}
 			return false;
 		});
 	}
 
-	send(type, data){
-		return this.members.map(client => client.send(type, data));
+	broadcastRaw(data) {
+		return this.clients.map(client => this.server.messaging.sendToRaw(client.ws, data));
 	}
 
-	sendRaw(data){
-		return this.members.map(client => this.server.messaging.sendToRaw(client.ws, data));
+	broadcastRawExcept(data, exceptions) {
+		return this.clients.map(client => {
+			if (!client.in(exceptions)) {
+				return this.server.messaging.sendToRaw(client.ws, data);
+			}
+			return false;
+		});
 	}
 
 }
