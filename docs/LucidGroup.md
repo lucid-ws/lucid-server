@@ -2,7 +2,7 @@
 
 ## Class: LucidGroup
 
-LucidGroups are used to organise clients and act as "channels" for messages to be sent in.
+LucidGroups are used to organise clients and act as "channels" for messages to be sent in. LucidGroups are anonymous - clients of the group are not aware they are part of the group.
 
 ## Instantiation
 ```js
