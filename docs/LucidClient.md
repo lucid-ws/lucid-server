@@ -7,7 +7,7 @@ This class is used to represent a Client of the server. They are not necessarily
 
 ## Instantiation
 
-Clients are created by the `[LucidServer](./LucidServer.md)`, developers should not instantiate Clients themselves.
+Clients are created by the [`LucidServer`](./LucidServer.md), developers should not instantiate Clients themselves.
 
 -------
 
