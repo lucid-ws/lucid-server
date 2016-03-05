@@ -61,3 +61,30 @@ Sends the unmodified data to the Client's WebSocket.
 * `extra` Object
 
 Sends a `disconnect` packet to the Client and then terminates the connection to it.
+
+--------
+
+## Events
+
+#### `connected(type)`
+* `type` String
+
+Emitted when the Client is connected. `type` is either `new` or `reconnect`.
+
+#### `error(error)`
+* `error` Error
+
+Emitted when the Client experiences an error.
+
+#### `close(reason, code, message)`
+* `reason` String
+* `code` Number
+* `message` String
+
+Emitted when the Client is closed. If no reason was specified (unexpected closure) then it will be null.
+
+#### `message(type, data)`
+* `type` String
+* `data` Object
+
+Emitted when the Client sends a message to the Server.
