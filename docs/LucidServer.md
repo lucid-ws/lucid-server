@@ -124,3 +124,9 @@ Emitted when a client is closed. If no reason was specified (unexpected closure)
 * `data` Object
 
 Emitted whenever a Client sends a custom (non-core) packet to the server.
+
+#### `clientConnected(client, type)`
+* `client` [LucidClient](./LucidClient.md)
+* `type` String - either `new` or `reconnect`
+
+Emitted whenever a Client connects or reconnects to the server.
