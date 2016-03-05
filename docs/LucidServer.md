@@ -9,7 +9,7 @@ const LucidServer = require("lucid-server")
 This class is a LucidServer. It is an `EventEmitter`.
 
 ## Constructor
-### new LucidServer([options], [callback])
+### new LucidServer([options])
 
 * `options` Object
 	* `port` Number
