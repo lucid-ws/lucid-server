@@ -53,7 +53,7 @@ class LucidWebSocketServer extends WebSocketServer{
 	}
 
 	eventClientClose(client, code, message){
-		var reason = client.temp.dc_reason || "unknown";
+		var reason = client.temp.dc_reason;
 		client.emit("close", reason, code, message);
 		this.wrapper.emit("clientClose", client, reason, code, message);
 		client.disconnect("close");
