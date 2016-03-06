@@ -5,12 +5,12 @@ class LucidMessagingService{
 		this.server = server;
 	}
 
-	sendToRaw(recipient, message){
-		recipient.send(message);
+	sendToRaw(recipient, message, callback){
+		recipient.send(message, null, callback);
 	}
 
-	sendTo(recipient, packet){
-		recipient.send(JSON.stringify(packet));
+	sendTo(recipient, packet, callback){
+		recipient.send(JSON.stringify(packet), null, callback);
 	}
 }
 

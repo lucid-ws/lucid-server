@@ -36,7 +36,7 @@ class LucidApp {
 
 	verifyIfUser(req, res, next) {
 		if (req.headers["token"]) {
-			var connections = this.wrapper.wss.connections.filter(conn => conn.uuid === req.headers["token"]);
+			var connections = this.wrapper.wss.connections.filter(conn => conn.token === req.headers["token"]);
 			if (connections.length === 1) {
 				var client = connections[0];
 				req.client = client;

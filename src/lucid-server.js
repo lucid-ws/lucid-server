@@ -16,7 +16,9 @@ var defaultOptions = {
 	max_connections: 10,
 	response_max_wait_time : 5000,
 	lenient : false,
-	heartbeat_interval : 30000
+	heartbeat_interval : 1000,
+	reconnect_max_wait_time : 1000 * 60 * 5,
+	max_return_queue : 100
 };
 
 class LucidServer extends EventEmitter{
