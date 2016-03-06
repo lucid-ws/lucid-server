@@ -3,10 +3,7 @@
 const WebSocket = require("ws");
 const EventEmitter = require("events").EventEmitter;
 
-const Status = {
-	AVAILABLE: 1,
-	UNAVAILABLE: 2
-};
+const Status = require("../util/constants").Status;
 
 class LucidClient extends EventEmitter {
 	constructor(ws, interfaceServer) {

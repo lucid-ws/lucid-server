@@ -5,6 +5,7 @@ const WebSocketServer = require("ws").Server;
 const Client = require("../structures/LucidClient");
 const LimboClient = require("../structures/LucidLimboClient");
 const md5Hex = require("md5-hex");
+const Status = require("../util/constants").Status;
 
 const protocol_v = require("../lucid-server").protocol_v;
 
@@ -34,7 +35,7 @@ class LucidWebSocketServer extends WebSocketServer {
 
 	renewClient(limbo, client) {
 		client.ws = limbo.ws;
-		client.status = "available";
+		client.status = Status.AVAILABLE;
 
 		var heartbeat_interval = this.wrapper.options.heartbeat_interval;
 
@@ -105,10 +106,10 @@ class LucidWebSocketServer extends WebSocketServer {
 		if (returning) {
 			// disable client
 			client.clean();
-			client.status = "unavailable";
+			client.status = Status.UNAVAILABLE;
 
 			this.timeoutWaits.push(setTimeout(() => {
-				if (client.status !== "available") {
+				if (client.status !== Status.AVAILABLE) {
 					client.disconnectNoReturn("core.noReturnAfterLeave");
 				}
 			}, this.wrapper.options.reconnect_max_wait_time));

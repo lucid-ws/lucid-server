@@ -4,6 +4,7 @@ const WebSocket = require("ws");
 const EventEmitter = require("events").EventEmitter;
 const protocol_v = require("../lucid-server").protocol_v;
 const md5Hex = require("md5-hex");
+const Status = require("../util/constants").Status;
 
 class LucidLimboClient extends EventEmitter {
 	constructor(ws, interfaceServer) {
@@ -62,7 +63,7 @@ class LucidLimboClient extends EventEmitter {
 
 					for (let client of this.server.connections) {
 						if (client.token === packet.d.token) {
-							if (client.status === "available") {
+							if (client.status === Status.AVAILABLE) {
 								this.kill("core.requestReturnSessionAlreadyActive");
 							} else if (!client.canReturn) {
 								this.kill("core.requestReturnDisallowed");
