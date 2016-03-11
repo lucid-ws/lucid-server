@@ -127,11 +127,10 @@ Emitted when a client is permanently closed and its session has ended. If no rea
 
 Emitted whenever a Client sends a custom (non-core) packet to the server.
 
-#### `clientConnect(client, type)`
+#### `clientConnect(client)`
 * `client` [LucidClient](./LucidClient.md)
-* `type` String - either `new` or `reconnect`
 
-Emitted whenever a Client connects to the server.
+Emitted whenever a new Client connects to the server.
 
 #### `clientMissTooManyPackets(client)`
 * `client` [LucidClient](./LucidClient.md)
