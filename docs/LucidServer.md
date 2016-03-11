@@ -43,7 +43,7 @@ Defaults to `300000` (5 minutes). The time in milliseconds that a client is allo
 #### `options.max_return_queue`
 Defaults to `100`. Redundant if `options.send_missed_on_reconnect` is false. Specifies how many packets a client can miss during a disconnection until its session expires.
 
-### `options.send_missed_on_reconnect`
+#### `options.send_missed_on_reconnect`
 Defaults to `true`. If `true`, the server will send packets that the client has missed during a disconnection after it reconnects.
 
 -------
