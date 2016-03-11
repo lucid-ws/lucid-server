@@ -24,6 +24,8 @@ class LucidClient extends EventEmitter {
 
 		this.queue = [];
 
+		this.sequence = 0;
+
 		// assume status is available since we are instantiating
 		this.status = Status.AVAILABLE;
 
@@ -37,18 +39,18 @@ class LucidClient extends EventEmitter {
 	}
 
 	_send(packet) {
+		packet.s = this.sequence;
+		this.sequence++;
 		if (this.ws.readyState === WebSocket.OPEN) {
 			this.server.messaging.sendTo(this.ws, packet, err => {
-				if (err && packet.t !== "disconnect"){
+				if (err && packet.t !== "disconnect") {
 					this.queue.push(packet);
-					if(this.queue.length > this.server.options.max_return_queue && this.status === Status.AVAILABLE){
-						this.disconnectWithReturn("core.tooManyFailedMessages");
-					}
 				}
 			});
 			return true;
 		} else {
-			this.queue.push(packet);
+			if (packet.t !== "disconnect")
+				this.queue.push(packet);
 			return false;
 		}
 	}
@@ -74,10 +76,7 @@ class LucidClient extends EventEmitter {
 
 	get canReturn() {
 		// explicit no return
-		if (!this._canReturn)
-			return false;
-
-		if (this.queue.length > this.server.options.max_return_queue)
+		if (!this._canReturn || this.server.options.reconnect_max_wait_time === -1)
 			return false;
 
 		return true;
@@ -128,7 +127,12 @@ class LucidClient extends EventEmitter {
 			);
 	}
 
+	hasListener(type){
+		return this.listeners(type).length > 0;
+	}
+
 	removeInternally() {
+		this.queue = [];
 		return this.server.wss.removeClient(this);
 	}
 }

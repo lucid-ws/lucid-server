@@ -11,6 +11,10 @@ server.on("clientClose", (client, reason) => {
 	console.log("server.client.close", reason);
 });
 
+server.on("clientMissedTooManyPackets", client => {
+	console.log(":()");
+})
+
 server.on("clientConnect", client => {
 
 	_client = client;
@@ -59,7 +63,7 @@ function startWS2() {
 	var ws = new WebSocket("ws://127.0.0.1:25544");
 	ws.onopen = e => {
 		console.log("open");
-		ws.send(JSON.stringify({ "t": "existing_auth", "d": { "protocol_v": "alpha2", token: token } }));
+		ws.send(JSON.stringify({ "t": "existing_auth", "d": { "protocol_v": "alpha2", token: token, s:2 } }));
 	}
 	ws.on("message", m => {
 		console.log(m);

@@ -61,6 +61,12 @@ class LucidLimboClient extends EventEmitter {
 						return;
 					}
 
+					// if sequence not provided
+					if(!packet.d.s){
+						this.kill("core.requestReturnWithoutSequence");
+						return;
+					}
+
 					for (let client of this.server.connections) {
 						if (client.token === packet.d.token) {
 							if (client.status === Status.AVAILABLE) {
@@ -68,7 +74,7 @@ class LucidLimboClient extends EventEmitter {
 							} else if (!client.canReturn) {
 								this.kill("core.requestReturnDisallowed");
 							} else {
-								this.server.wss.renewClient(this, client);
+								this.server.wss.renewClient(this, client, packet.d.s);
 							}
 							return;
 						}

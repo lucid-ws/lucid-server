@@ -1,4 +1,5 @@
 # LucidServer
+### `protocol alpha3`
 
 ## Class: LucidServer
 
@@ -17,6 +18,9 @@ This class is a LucidServer. It is an `EventEmitter`.
 	* `response_max_wait_time` Number
 	* `lenient` Boolean
 	* `hearbeat_interval` Number
+	* `reconnect_max_wait_time` Number
+	* `max_return_queue` Number
+	* `send_missed_on_reconnect` Boolean
 
 #### `options.port`
 Defaults to _25543_. The port that the server should listen on.
@@ -32,6 +36,15 @@ Defaults to `false`. If `true`, the server will not terminate clients that send 
 
 #### `options.heartbeat_interval`
 Defaults to `30000`. The interval in milliseconds that clients are expected to send a heartbeat packet. To disable heartbeats, set to `-1`.
+
+#### `options.reconnect_max_wait_time`
+Defaults to `300000` (5 minutes). The time in milliseconds that a client is allowed to be disconnected until it its session expires. Set to `-1` if you want to disable client reconnects.
+
+#### `options.max_return_queue`
+Defaults to `100`. Redundant if `options.send_missed_on_reconnect` is false. Specifies how many packets a client can miss during a disconnection until its session expires.
+
+### `options.send_missed_on_reconnect`
+Defaults to `true`. If `true`, the server will send packets that the client has missed during a disconnection after it reconnects.
 
 -------
 
@@ -72,28 +85,17 @@ Creates a [LucidGroup](./LucidGroup.md) with the specified options and members.
 Deletes a [LucidGroup](./LucidGroup.md) and unregisters it. Returns `true` if the operation was successful.
 
 #### `server.broadcast(type, data)`
-* type String
-* data Object
+* `type` String
+* `data` Object
 
 Turns the given type and data into a packet and sends it to all available clients.
 
-#### `server.broadcastRaw(data)`
-* data String
-
-Sends the data given to all available clients without modifying it.
-
 #### `server.broadcastExcept(type, data, exceptions)`
-* type String
-* data Object
-* exceptions Array<[LucidClient](./LucidClient.md)>
+* `type` String
+* `data` Object
+* `exceptions` Array<[LucidClient](./LucidClient.md)>
 
 Broadcasts a packet to all available clients apart from those specified in the exceptions array.
-
-#### `server.broadcastRawExcept(data, exceptions)`
-* data Object
-* exceptions Array<[LucidClient](./LucidClient.md)>
-
-Broadcasts an unmodified string to all available clients apart from those specified in the exceptions array.
 
 --------
 
@@ -116,7 +118,7 @@ Emitted when a client experiences an error.
 * `code` Number
 * `message` String
 
-Emitted when a client is closed. If no reason was specified (unexpected closure) then it will be `null`.
+Emitted when a client is permanently closed and its session has ended. If no reason was specified (unexpected closure) then it will be `null`.
 
 #### `clientMessage(client, type, data)`
 * `client` [LucidClient](./LucidClient.md)
@@ -125,8 +127,25 @@ Emitted when a client is closed. If no reason was specified (unexpected closure)
 
 Emitted whenever a Client sends a custom (non-core) packet to the server.
 
-#### `clientConnected(client, type)`
+#### `clientConnect(client, type)`
 * `client` [LucidClient](./LucidClient.md)
 * `type` String - either `new` or `reconnect`
 
-Emitted whenever a Client connects or reconnects to the server.
+Emitted whenever a Client connects to the server.
+
+#### `clientMissTooManyPackets(client)`
+* `client` [LucidClient](./LucidClient.md)
+
+Emitted when a client reconnects and asks for missing packets, but it has missed too many (specified by `server.options.max_return_queue`). In this case, if a `clientMissTooManyPackets` event is registered to the server, or `missTooManyPackets` to the client, instead of disconnecting the client, the event is fired instead.
+
+#### `clientReconnect(client)`
+* `client` [LucidClient](./LucidClient.md)
+
+Emitted when a client reconnects to the server.
+
+#### `clientUnavailable(client, reason)`
+* `client` [LucidClient](./LucidClient.md)
+* `reason` String
+
+Emitted when a client has disconnected, but its session is still kept alive for a time specified by `server.options.reconnect_max_wait_time`. After this time, a `clientClose` event will be fired.
+

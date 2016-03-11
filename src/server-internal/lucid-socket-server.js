@@ -33,20 +33,69 @@ class LucidWebSocketServer extends WebSocketServer {
 
 	}
 
-	renewClient(limbo, client) {
+	renewClient(limbo, client, sequence) {
 		client.ws = limbo.ws;
 		client.status = Status.AVAILABLE;
 
-		var heartbeat_interval = this.wrapper.options.heartbeat_interval;
+		var heartbeat_interval = this.wrapper.options.heartbeat_interval, toSend = [], tooMany = false;
+
+		// if the client has missed more messages than are allowed and there is
+		// no listener to handle it then disconnect
+		if (this.wrapper.options.send_missed_on_reconnect && sequence !== -1) {
+			if (sequence - client.sequence > this.wrapper.options.max_return_queue) {
+				if (client.hasListener("missTooManyPackets") || this.wrapper.hasListener("clientMissTooManyPackets")) {
+					tooMany = true;
+				} else {
+					limbo.kill("core.requestTooManyReturnPackets");
+					return;
+				}
+			} else if (this.wrapper.options.send_missed_on_reconnect && sequence !== -1) {
+				// requesting packets and it meets the limit
+				var messages = Array.prototype.slice.call(client.queue).reverse();
+				for (let msg of messages) {
+					if (msg.s >= sequence) {
+						toSend.unshift(JSON.stringify(msg));
+					} else {
+						break;
+					}
+				}
+
+				client.queue = [];
+			}
+		}
 
 		client._send({
 			t: "authenticated",
 			d: {
 				uuid: client.uuid,
 				token: client.token,
-				heartbeat_interval
+				heartbeat_interval,
+				reconnect_packets: this.wrapper.options.send_missed_on_reconnect
 			}
 		});
+
+		if (sequence !== -1) {
+			if (tooMany) {
+				client.emit("missTooManyPackets");
+				this.wrapper.emit("clientMissTooManyPackets", client);
+			} else if (this.wrapper.options.send_missed_on_reconnect) {
+				client._send({
+					t: "returnPackets",
+					d: {
+						allowed: true,
+						packets: toSend
+					}
+				});
+			} else {
+				client._send({
+					t: "returnPackets",
+					d: {
+						allowed: false,
+						packets: []
+					}
+				});
+			}
+		}
 
 		// if heartbeat is enabled, only then start using it with the client
 		if (heartbeat_interval > -1) {
@@ -61,7 +110,7 @@ class LucidWebSocketServer extends WebSocketServer {
 		var client = new Client(limbo.ws, this.wrapper);
 		client.authenticated = true;
 		client.uuid = uuid;
-		client.token = md5Hex(`${Date.now() }${Math.random() * 1000000} }`) + md5Hex(`${Date.now() }${(Math.random() * 1000000) + 1000000} }`);
+		client.token = md5Hex(`${Date.now()}${Math.random() * 1000000} }`) + md5Hex(`${Date.now()}${(Math.random() * 1000000) + 1000000} }`);
 		this.connections.push(client);
 
 		var heartbeat_interval = this.wrapper.options.heartbeat_interval;
@@ -71,7 +120,8 @@ class LucidWebSocketServer extends WebSocketServer {
 			d: {
 				uuid: client.uuid,
 				token: client.token,
-				heartbeat_interval
+				heartbeat_interval,
+				reconnect_packets: false
 			}
 		});
 
@@ -79,6 +129,7 @@ class LucidWebSocketServer extends WebSocketServer {
 		if (heartbeat_interval > -1) {
 			client.setHeartbeatListener(heartbeat_interval);
 		}
+
 		client.emit("connect");
 		this.wrapper.emit("clientConnect", client);
 	}
