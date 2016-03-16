@@ -4,12 +4,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const protocol_v = require("../lucid-server").protocol_v;
 const cors = require("cors");
+const http = require("http");
 
 class LucidApp {
-	constructor(wrapper) {
+	constructor(options, wrapper) {
 
 		this.wrapper = wrapper;
-
+		this.options = options;
 		var app = this.app = express();
 		var customRouter = this.customAPIRouter = express.Router();
 		var internalAPIRouter = this.internalAPIRouter = express.Router();
@@ -30,8 +31,8 @@ class LucidApp {
 
 		app.use("/custom_api", customRouter);
 		app.use("/api", internalAPIRouter);
-
-		app.listen(this.wrapper.options.api_port);
+		this.httpServer = http.createServer(app);
+		this.httpServer.listen(this.wrapper.options.port);
 	}
 
 	verifyIfUser(req, res, next) {

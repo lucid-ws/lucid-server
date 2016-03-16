@@ -6,6 +6,7 @@ const Client = require("../structures/LucidClient");
 const LimboClient = require("../structures/LucidLimboClient");
 const md5Hex = require("md5-hex");
 const Status = require("../util/constants").Status;
+const crypto = require("crypto");
 
 const protocol_v = require("../lucid-server").protocol_v;
 
@@ -110,7 +111,7 @@ class LucidWebSocketServer extends WebSocketServer {
 		var client = new Client(limbo.ws, this.wrapper);
 		client.authenticated = true;
 		client.uuid = uuid;
-		client.token = md5Hex(`${Date.now()}${Math.random() * 1000000} }`) + md5Hex(`${Date.now()}${(Math.random() * 1000000) + 1000000} }`);
+		client.token = crypto.randomBytes(32).toString("hex");
 		this.connections.push(client);
 
 		var heartbeat_interval = this.wrapper.options.heartbeat_interval;
@@ -153,7 +154,6 @@ class LucidWebSocketServer extends WebSocketServer {
 	eventClientClose(client, code, message) {
 		var reason = client.temp.dc_reason;
 		var returning = client.canReturn;
-
 		if (returning) {
 			// disable client
 			client.clean();

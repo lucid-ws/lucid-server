@@ -91,8 +91,9 @@ class LucidLimboClient extends EventEmitter {
 		});
 	}
 
-	kill(reason, extra) {
+	kill(reason, extra, canReturn) {
 		extra = extra || {};
+		extra.return = canReturn;
 
 		var d = {
 			reason: reason,

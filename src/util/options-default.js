@@ -1,10 +1,17 @@
-exports.merge = function(obj, defaults){
-	obj = obj || {};
+"use strict";
+module.exports = function merge(def, given){
+	if(!given)
+		return def;
 
-	for(var key in defaults){
-		if(!obj.hasOwnProperty(key))
-			obj[key] = defaults[key];
+	given = given || {};
+
+	for(let key in def){
+		if(!given.hasOwnProperty(key)){
+			given[key] = def[key];
+		}else if(given[key] === Object(given[key])){
+			given[key] = merge(def[key], given[key]);
+		}
 	}
 
-	return obj;
-};
+	return given;
+}

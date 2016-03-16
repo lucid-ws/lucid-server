@@ -3,7 +3,8 @@ var WebSocket = require("ws");
 
 var server = new LucidServer();
 
-var ws = new WebSocket("ws://127.0.0.1:25544");
+var ws = new WebSocket("ws://127.0.0.1:25543/ws");
+ws.onerror=()=>{};
 
 var uuid, token, _client;
 
@@ -30,7 +31,7 @@ server.on("clientConnect", client => {
 
 ws.onopen = e => {
     console.log("open");
-    ws.send(`{"t":"new_auth","d":{"protocol_v":"alpha2"}}`);
+    ws.send(`{"t":"new_auth","d":{"protocol_v":"alpha3"}}`);
 }
 ws.on("message", m => {
 
@@ -53,8 +54,6 @@ ws.on("close", e => {
 	console.log("client.close", e);
 	console.log("length", server.clients.length);
 
-	setTimeout(startWS2, 5000);
-
 	_client.send("hello");
 });
 
@@ -63,7 +62,7 @@ function startWS2() {
 	var ws = new WebSocket("ws://127.0.0.1:25544");
 	ws.onopen = e => {
 		console.log("open");
-		ws.send(JSON.stringify({ "t": "existing_auth", "d": { "protocol_v": "alpha2", token: token, s:2 } }));
+		ws.send(JSON.stringify({ "t": "existing_auth", "d": { "protocol_v": "alpha3", token: token, s:2 } }));
 	}
 	ws.on("message", m => {
 		console.log(m);

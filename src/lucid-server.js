@@ -1,8 +1,8 @@
 "use strict";
 
-exports.protocol_v = "alpha2";
+exports.protocol_v = "alpha3";
 
-var MergeOptions = require("./util/options-default").merge;
+var MergeOptions = require("./util/options-default");
 var EventEmitter = require("events").EventEmitter;
 
 var LucidMessagingService = require("./server-internal/lucid-messaging");
@@ -10,9 +10,12 @@ var LucidWebSocketServer = require("./server-internal/lucid-socket-server");
 var LucidApp = require("./server-internal/lucid-app");
 var LucidGroup = require("./structures/LucidGroup");
 
+const http = require("http");
+
 var defaultOptions = {
-	api_port: 25543,
-	wss_port: 25544,
+	ws : {},
+	http : {},
+	port: 25543,
 	max_connections: 10,
 	response_max_wait_time : 5000,
 	lenient : false,
@@ -34,14 +37,16 @@ class LucidServer extends EventEmitter{
 		this.groups = [];
 
 		this.messaging = new LucidMessagingService(this);
-		options.port = options.wss_port;
-		this.wss = new LucidWebSocketServer(options, this);
-		this._app = new LucidApp(this);
 
+		this.app = new LucidApp(options.http, this);
+
+		options.ws.server = this.app.httpServer;
+		options.ws.path = "/ws";
+		this.wss = new LucidWebSocketServer(options.ws, this);
 	}
 
 	get api(){
-		return this._app.customAPIRouter;
+		return this.app.customAPIRouter;
 	}
 
 	get connections(){

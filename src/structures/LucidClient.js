@@ -90,6 +90,7 @@ class LucidClient extends EventEmitter {
 
 	disconnectNoReturn(reason, extra) {
 		extra = extra || {};
+		extra.return = false;
 		this._canReturn = false;
 		var d = { reason, extra };
 		this._send({
@@ -105,6 +106,7 @@ class LucidClient extends EventEmitter {
 
 	disconnectWithReturn(reason, extra) {
 		extra = extra || {};
+		extra.return = true;
 		this._canReturn = true;
 		var d = { reason, extra };
 		this._send({
